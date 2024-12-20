@@ -2,11 +2,38 @@ name: Build and Push Docker Image
 
 on:
   push:
+    branches:
+      - develop
     tags:
       - 'v*.*.*'
 
 jobs:
-  build:
+  build-on-develop:
+    if: github.ref == 'refs/heads/develop'
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Build Docker image
+        run: |
+          docker build --no-cache -t flask-json-ui:develop -f Dockerfile .
+
+      - name: Tag and push Docker image
+        run: |
+          docker tag flask-json-ui:develop ghcr.io/networkpaul/json-route-app/flask-json-ui:develop
+          docker push ghcr.io/networkpaul/json-route-app/flask-json-ui:develop
+
+  build-on-tag:
+    if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
 
     steps:

@@ -19,7 +19,7 @@ To get started, follow these steps:
 1. **Clone the Repository:**
 
    ```bash
-   git clone https://github.com/networkpaul/json-route-app.git
+   git clone https://github.com/emmpaul/json-route-app.git
    cd json-route-app
    ```
 
